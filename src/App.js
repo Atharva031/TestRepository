@@ -6,8 +6,10 @@ import KeyRatios from './key-ratios.json';
 import CurrentDividends from './current-dividend.json';
 import AnalystEstimate from './analyst-estimate.json';
 import CurrentOwnership from './current-ownership.json';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import InsiderStats from './insider.json';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+
 
 const keyRatioSummaryProfitablity = KeyRatios.Profitability;
 const keyRatioSummaryFundamentals = KeyRatios.Fundamental;
@@ -23,8 +25,61 @@ const annualsProfitAndLoss = ProfitAndLoss.financials.annuals;
 const quarterlyProfitAndLoss = ProfitAndLoss.financials.quarterly;
 const fiscalYearAnnual = annualsProfitAndLoss['Fiscal Year'];
 const fiscalYearQuarter = quarterlyProfitAndLoss['Fiscal Year'];
+const mappingRevenue = ProfitAndLoss.financials.annuals.income_statement.Revenue;
+const mappingFiscalYear = ProfitAndLoss.financials.annuals['Fiscal Year']; 
+const xAxisData = mappingFiscalYear.map(item => item.name);
+const yAxisData = mappingRevenue.map(item => item.value);
+const InsiderStatsPath = InsiderStats.WMT;
 
 const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#0088aa', '#ff0000'];
+
+const indicatorstats = [
+  { date: "1979-01-28", value: 29.4 },
+  { date: "1980-01-28", value: 41.2 },
+  { date: "1981-01-28", value: 55.7 },
+  { date: "1982-01-28", value: 82.8 },
+  { date: "1983-01-28", value: 124.1 },
+  { date: "1984-01-28", value: 196.2 },
+  { date: "1985-01-28", value: 270.8 },
+  { date: "1986-01-28", value: 327.5 },
+  { date: "1987-01-28", value: 450.1 },
+  { date: "1988-01-28", value: 627.6 },
+  { date: "1989-01-28", value: 837.2 },
+  { date: "1990-01-28", value: 1075.9 },
+  { date: "1991-01-28", value: 1291 },
+  { date: "1992-01-28", value: 1608.5 },
+  { date: "1993-01-28", value: 1995 },
+  { date: "1994-01-28", value: 2333 },
+  { date: "1995-01-28", value: 2681 },
+  { date: "1996-01-28", value: 2740 },
+  { date: "1997-01-28", value: 3056 },
+  { date: "1998-01-28", value: 3526 },
+  { date: "1999-01-28", value: 4430 },
+  { date: "2000-01-28", value: 5575 },
+  { date: "2001-01-28", value: 6295 },
+  { date: "2002-01-28", value: 6592 },
+  { date: "2003-01-28", value: 7955 },
+  { date: "2004-01-28", value: 9054 },
+  { date: "2005-01-28", value: 10267 },
+  { date: "2006-01-28", value: 11231 },
+  { date: "2007-01-28", value: 11284 },
+  { date: "2008-01-28", value: 12731 },
+  { date: "2009-01-28", value: 13381 },
+  { date: "2010-01-28", value: 14370 },
+  { date: "2011-01-28", value: 16389 },
+  { date: "2012-01-28", value: 15699 },
+  { date: "2013-01-28", value: 16999 },
+  { date: "2014-01-28", value: 16022 },
+  { date: "2015-01-28", value: 16363 },
+  { date: "2016-01-28", value: 14694 },
+  { date: "2017-01-28", value: 13643 },
+  { date: "2018-01-28", value: 9862 },
+  { date: "2019-01-28", value: 6670 },
+  { date: "2020-01-28", value: 14881 },
+  { date: "2021-01-28", value: 13510 },
+  { date: "2022-01-28", value: 13673 },
+  { date: "2023-01-28", value: 11680 }
+];
 
 const fundsMetrics = [
   'Total Liabilities',
@@ -427,7 +482,17 @@ const GFValueChart = [
   {name: 'Momentum Rank', value: '10'},
 ]
 
-
+const InsiderStatsMetrics = [
+  'position',
+  'date',
+  'type',
+  'trans_share',
+  'final_share',
+  'price',
+  'cost',
+  'insider',
+  'change'
+]
 
 
 function TableRows({ data, label }) {
@@ -710,6 +775,8 @@ function DividendSummary({ label }) {
     }
     return null;
   }
+
+
 
 function App() {
   return (
@@ -1036,8 +1103,31 @@ function App() {
         <table>
           <TableRows label="Dividend Yield " data={KeyRatios.Dividends['Dividend Yield % (10y Low)']} />
           <TableRows label="Dividend Payout Ratio" data={KeyRatios.Dividends['Dividend Payout Ratio']} />
+          <TableRows label="Growth Rate (5-Year)" data={KeyRatios.Growth['5-Year Dividend Growth Rate (Per Share)']} />
+          <TableRows label="Yield on Cost (5-Year)" data={Summary.summary.ratio['Yield on cost (5-Year)'].value} />
+          <TableRows label="3-Year Share Buyback Ratio" data={KeyRatios.Fundamental['3-Year Share Buyback Ratio']} />
         </table>
       </div>
+
+      <div className='Table'>
+  <h1>Insider Stats</h1>
+  <table>
+    <tbody>
+      {InsiderStats.WMT.slice(0, 10).map((transaction, index) => (
+        <tr key={index}>
+          {Object.entries(transaction).map(([key, value]) => (
+            <React.Fragment key={key}>
+              <td className="bold">{key}</td>
+              <td>{value}</td>
+            </React.Fragment>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+
 
       <h1>Valuation Chart</h1>
       <div className="Chart">
@@ -1073,8 +1163,26 @@ function App() {
           <PolarRadiusAxis angle={30} domain={[0, 10]} tick={{ fontSize: 12 }} />
           <Radar name="Rank" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} strokeWidth={2} />
         </RadarChart>
-      </div>
+      </div>   
     </div>
+    <div>
+      <h1>Line Chart Example</h1>
+      <LineChart
+        width={800}
+        height={400}
+        data={indicatorstats}
+        margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="value" stroke="#8884d8" />
+      </LineChart>
+      </div>
+
+    
     </div>
   );
 }

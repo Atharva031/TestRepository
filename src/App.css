@@ -82,12 +82,22 @@ body {
   background-color: #eaf5ff; /* Light blue background color for selected row */
 }
 
-/* App.css */
+/* Line chart styles */
 
-/* Existing styles */
+.ChartContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 
-.Chart {
-  margin: 20px auto;
+.ChartBox {
+  width: 800px; /* Adjusted width for the line chart */
+  height: 400px; /* Adjusted height for the line chart */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
 
 .recharts-cartesian-axis-tick {
@@ -114,23 +124,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.ChartContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.bold {
+  font-weight: bold;
 }
-
-.ChartBox {
-  width: 600px;
-  height: 500px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
-
-
-
-
-
